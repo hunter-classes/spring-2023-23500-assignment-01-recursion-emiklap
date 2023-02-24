@@ -1,7 +1,10 @@
-* Project 1 - Recursive Search
+* Project 1 - Recursive Search **(Knights Tour)**
 
-* Due TBD
+* Name: Emily Klapper
 
+* Username : emiklap
+
+* Due Monday 2/27/23
 
 
 * Folder and files
