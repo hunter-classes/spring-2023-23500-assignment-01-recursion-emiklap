@@ -3,59 +3,59 @@
 #include <string>
 #include <unistd.h>
 
-int board_size = 5;
-int me = 1;
+const int board_size = 5;
 
-bool completed_board(int board[][5], int size) {
-  for (int i = 0; i < size; i++) {
-    for (int j = 0; j < size; j++) {
-      if (board[i][j] == 0) {
-        return false; //if there is a 0, the board is not complete
+//checks if the next spot is in bounds AND if it is empty
+bool in_bounds(int board[][board_size], int new_row, int new_col) {
+  if (new_row >= 0 && new_row < board_size && new_col >= 0 && new_col < board_size) {
+      if (board[new_row][new_col] == 0) {
+        return true;
       }
-    }
   }
-  return true;
+  return false;
 }
 
 //can we replace the 5 with a var?
-void print_board(int board[][5], int size){
+void print_board(int board[][board_size], int size){
   std::cout << "[0;0H\n";
 
   for (int i = 0; i < size; i++) {
     for (int j = 0; j < size; j++) {
-      std::cout << board[i][j] << "  ";
+      if (board[i][j] < 10) {
+        std::cout << board[i][j] << "  ";
+      } else {
+        std::cout << board[i][j] << " ";
+      }
     }
     std::cout << "\n";
   }
 }
 
-void solve(int board[][5], int size, int row, int col,bool &solved) {
-  if (me == board_size*board_size+1) {
+void solve(int board[][board_size], int size, int counter, int row, int col,bool &solved) {
+  if (counter == board_size*board_size+1) {
     solved = true;
     return;
   }
 
-  if (row < 0 || row > size || col < 0 || col > size) {
+  if (in_bounds(board, row, col)) {
+    board[row][col] = counter;
+    counter++;
+    usleep(15000);
+    print_board(board,size);
+  } else {
     return;
   }
 
-  if (board[row][col] == 0) {
-    board[row][col] = me;
-    me++;
-    usleep(130000);
-    print_board(board,size);
-  }
+  if (!solved) solve(board,size,counter,row-2,col+1, solved);
+  if (!solved) solve(board,size,counter,row-1,col+2, solved);
+  if (!solved) solve(board,size,counter,row+1,col+2, solved);
+  if (!solved) solve(board,size,counter,row+2,col+1, solved);
+  if (!solved) solve(board,size,counter,row+2,col-1, solved);
+  if (!solved) solve(board,size,counter,row+1,col-2, solved);
+  if (!solved) solve(board,size,counter,row-1,col-2, solved);
+  if (!solved) solve(board,size,counter,row-2,col-1, solved);
 
-  if (!solved) solve(board,size,row+1,col+2, solved);
-  if (!solved) solve(board,size,row+2,col+1, solved);
-  if (!solved) solve(board,size,row-1,col+2, solved);
-  if (!solved) solve(board,size,row-2,col+1, solved);
-  if (!solved) solve(board,size,row-2,col-1, solved);
-  if (!solved) solve(board,size,row-1,col-2, solved);
-  if (!solved) solve(board,size,row+1,col-2, solved);
-  if (!solved) solve(board,size,row+2,col-1, solved);
-
-  //if (!solved)  board[row][col] = visited;
+  if (!solved) board[row][col] = 0;
 }
 
 int main()
@@ -70,6 +70,6 @@ int main()
   bool solved = false;
 
   print_board(board, lines);
-  solve(board,lines,0,0,solved);
+  solve(board,lines,1,0,0,solved);
   return 0;
 }
