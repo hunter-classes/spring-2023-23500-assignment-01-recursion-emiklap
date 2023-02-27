@@ -40,7 +40,7 @@ void solve(int board[][board_size], int size, int counter, int row, int col,bool
   if (in_bounds(board, row, col)) {
     board[row][col] = counter;
     counter++;
-    usleep(15000);
+    usleep(35000);
     print_board(board,size);
   } else {
     return;
